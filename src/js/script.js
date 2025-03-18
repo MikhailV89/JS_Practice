@@ -1,14 +1,14 @@
-// const numbers = [1, 2, 3, 4, 5];
+const numbers = [1, 2, 3, 4, 5];
+
+let sum = 0;
+for (let i = 2; i < numbers.length; i++) {
+    sum += numbers[i];// 0 + 3// 3 + 4// 7 + 5
+    console.log(sum); // ? 3// 7// 12
+}
+
+console.log(sum); // ? 12
+
 //
-// let sum = 0;
-// for (let i = 2; i < numbers.length; i++) {
-//     sum += numbers[i];// 0 + 3// 3 + 4// 7 + 5
-//     console.log(sum); // ? 3// 7// 12
-// }
-//
-// console.log(sum); // ? 12
-//
-// //
 //
 // let product = 1;
 // for (let i = 1; i < numbers.length - 1; i++) {
