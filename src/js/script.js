@@ -95,15 +95,19 @@
                     }
                 }
             }
-        }
-        message = message.slice(0, message.length - 2);
-        if (i === products.length - 1) {
-            message += ';'
-        } else {
+            message = message.slice(0, message.length - 2);
             message += '; '
-        }
-    }
 
+
+            // if (i === categories.length - 1) {
+            //     message += ';'
+            // } else {
+            //     message += '; '
+            // }
+        }
+
+    }
+    message = message.slice(0, message.length - 1);
      console.log(message); // Має вивести "Electronics - Laptop, Phone; Computers - Laptop; Clothing - Shirt;"
      console.log(message === "Electronics - Laptop, Phone; Computers - Laptop; Clothing - Shirt;"); // має вивести true
 })();
@@ -163,36 +167,41 @@
 
 //
 
-// (() => {
-//     // замінити іф на тернарний оператор і прибрати копіпаст (зараз `Shop is ` повторюється)
-//     const isOpen = false;
-//     let message;
-//     if (isOpen) {
-//         message = 'Shop is open';
-//     }
-//     else {
-//         message = 'Shop is closed';
-//     }
-//
-//     // замінити тернарний оператор на іф
-//     const isActive = true;
-//     isActive ? alert('Active') : console.log('Sleeping');
-// })();
-//
-
-
  (() => {
 //     // замінити іф на тернарний оператор і прибрати копіпаст (зараз `Shop is ` повторюється)
      const isOpen = false;
-     let message;
-     message = 'Shop is '+ (isOpen ? 'open' : 'closed');
+
+    const message = 'Shop is '+ (isOpen ? 'open' : 'closed');
      console.log(message);
 
 //     // замінити тернарний оператор на іф
-  const isActive = true;
-  if (isActive) {
-      alert('Active')
-  } else {
-      console.log('Sleeping');
-  }
+//   const isActive = true;
+//   if (isActive) {
+//       alert('Active')
+//   } else {
+//       console.log('Sleeping');
+//   }
  })();
+
+ const isActive = false;
+// isActive ? alert('Active') : alert('Sleeping');
+
+// let res = ''
+// if (isActive) {
+//    res = 'Active'
+// } else {
+//    res = 'Sleeping'
+// }
+// alert(res)
+
+// const res = getStatus('Active');
+// alert(res)
+
+
+function getStatus (isActive, str1, str2) {
+    return isActive ? str1 : str2
+}
+
+const res = getStatus(isActive, 'Active', 'Sleeping');
+alert(res)
+
