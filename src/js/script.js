@@ -168,7 +168,7 @@ cardList.onclick = (e)=>{
         toggleParticipantEvents(e)
     }
 
-    if (e.target.textContent === 'show more' || e.target.textContent === 'show less') {
+    if (e.target.className === 'speakers_info') {
         toggleListSpeakers(e)
     }
 }
@@ -203,14 +203,17 @@ const toggleListSpeakers = (e) => {
 
     const speakerBlock = e.target.parentElement
     const speakers = speakerBlock.querySelectorAll('p')
-
+    const speakersNamesSpan = speakerBlock.querySelectorAll('span')
+// debugger
     for (let i = 0; i < speakers.length; i++) {
 
         if (speakers[i].style.display === 'none') {
             speakers[i].style.display = ''
+            speakersNamesSpan[i].style.display = 'none'
             e.target.textContent = 'show less'
         } else {
             speakers[i].style.display = 'none'
+            speakersNamesSpan[i].style.display = ''
             e.target.textContent = 'show more'
         }
 
@@ -251,6 +254,7 @@ for (let i = 0; i < events.length; i++) {
 
     const speakerButtonInfo = document.createElement('button')
     speakerButtonInfo.textContent = `show more`
+    speakerButtonInfo.classList.add('speakers_info')
 
     for (let k = 0; k < events[i].speakers.length; k++) {
         const speakersName = document.createElement('span')
