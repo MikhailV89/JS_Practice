@@ -1,115 +1,81 @@
+//№1
+const wrap = document.querySelector('.wrap')
 // const button = document.querySelector('.activate-btn');
 //
-// button.onclick = (e)=> {
-//     if (e.target.className === 'activate-btn') {
-//         but(e)
-//     }
-//
-// }
+wrap.onclick = (e)=> {
+    if (e.target.classList.contains('activate-btn')) {
+        but(e)
+         butTask2(e)
+    }
+    if (e.target.classList.contains('change-email-btn')) {
+        changeEmail(e)
+    }
 
-// const but = (e) => {
-//     const father = document.body.firstElementChild
-//     const lastEl = father.lastElementChild
-//     const prevEl = lastEl.previousElementSibling
-//     const status = prevEl.lastElementChild
-//
-//    if ( status.textContent === 'inactive') {
-//        status.textContent = 'active'
-//    } else {
-//        status.textContent = 'inactive'
-//    }
-// }
+    if (e.target.className === 'make-admin-btn') {
+         changeOnAdmin(e)
+    }
 
-// const but = () => {
-//     const father = document.body.firstElementChild
-//     const lastEl = father.children[1]
-//     const lastChild = lastEl.lastElementChild
-//     const status = lastChild.lastElementChild
-//
-//    status.textContent = 'active'
-//
-//
-// }
+    if (e.target.className === 'discount-btn') {
+         discount(e)
+     }
+}
+
+const but = (e) => {
+   const prevEl = e.target.previousElementSibling
+    const status = prevEl.lastElementChild
+
+    status.textContent = 'active'
+}
+
+// //№2
+
+const butTask2 = (e) => {
+    const prevFatherEl = e.target.previousElementSibling
+    const lastUserChild = prevFatherEl.lastElementChild
+    const status = lastUserChild.lastElementChild
 
 
-// const button1 = document.querySelector('.change-email-btn');
-//
-// button1.onclick = (e) =>{
-//     if (e.target.className === 'change-email-btn') {
-//         changeEmail(e)
-//     }
-// }
+    status.textContent = 'active'
+}
 
-// const changeEmail = ()=> {
-//     const father = document.body.firstElementChild;
-//     const lastEl = father.lastElementChild// кнопка
-//     const prvEl = lastEl.previousElementSibling//div info
-//
-//     const user = prvEl.lastElementChild//div user
-//     const email = user.lastElementChild
-//     const emailText = email.lastElementChild
-//
-//     emailText.textContent = 'new@mail.com'
-// }
-// const changeEmail = () => {
-//     const father = document.body.firstElementChild;
-//     const lastEl = father.lastElementChild
-//     const prvEl = lastEl.previousElementSibling
-//
-//     const user = prvEl.lastElementChild
-//     const email = user.lastElementChild
-//     const emailText = email.lastElementChild
-//
-//     emailText.textContent = 'new@mail.com'
-// }
 
-// const changeEmail = () => {
-//     const father = document.body.firstElementChild
-//     const lastEl = father.lastElementChild
-//     const prvEl = lastEl.previousElementSibling
-//
-//     const user = prvEl.lastElementChild
-//     const email = user.lastElementChild
-//     const emailText = email.lastElementChild
-//
-//     emailText.textContent = 'new@mail.com'
-// }
+const changeEmail = (e)=> {
+    const divInfo = e.target.previousElementSibling;
+    const contacts = divInfo.lastElementChild;
+    const lastUser = contacts.lastElementChild
+    const emailText = lastUser.lastElementChild
+
+     emailText.textContent = 'new@mail.com'
+}
 
 
 // const buttonAdmin = document.querySelector('.make-admin-btn');
-//
-// buttonAdmin.onclick = (e) => {
-//     if (e.target.className === 'make-admin-btn') {
-//         changeOnAdmin(e)
-//     }
-// }
-//
-// const changeOnAdmin = () => {
-//     const father = document.body.firstElementChild
-//     const body = father.children[1]
-//     const right = body.lastElementChild
-//     const lastEl = right.lastElementChild
-//
-//     const admin = lastEl.lastElementChild
-//
-//     admin.textContent = 'admin'
-// }
 
-const button3 = document.querySelector('.discount-btn');
+const changeOnAdmin = (e) => {
+    const footer = e.target.parentElement;
+    const body = footer.previousElementSibling
 
-button3.onclick = (e) => {
-    if (e.target.className === 'discount-btn') {
-        discount(e)
-    }
+    const right = body.lastElementChild
+    const user = right.lastElementChild
+    const admin = user.lastElementChild
+
+     admin.textContent = 'admin'
 }
 
-const discount = () => {
-    const father = document.body.firstElementChild
-    const content = father.children[1]
-    const main = content.firstElementChild
+// const button3 = document.querySelector('.discount-btn');
 
-    const lastEl = main.lastElementChild
-    const price = lastEl.lastElementChild
+const discount = (e) => {
+ const actions = e.target.parentElement;
+ const mainInfo = actions.previousElementSibling
+    const lastRow = mainInfo.lastElementChild
 
-    price.textContent = '$800'
+    const price = lastRow.lastElementChild
+     price.textContent = '$800'
 }
+
+
+// задача 1 и 2 вызывал их на 1 клике.
+// Пытался что б работали кнопки так, что б не надо было коментировать предыдущие таски
+// с помощью гугла дошел до обертки на которую навесил обработчик
+// таска 4 все ок
+// таска 5 все ок
