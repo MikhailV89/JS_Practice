@@ -2,10 +2,15 @@
 const wrap = document.querySelector('.wrap')
 // const button = document.querySelector('.activate-btn');
 //
+
 wrap.onclick = (e)=> {
+
     if (e.target.classList.contains('activate-btn')) {
         but(e)
-         butTask2(e)
+    }
+
+    if (e.target.classList.contains('Task2')) {
+        butTask2(e)
     }
     if (e.target.classList.contains('change-email-btn')) {
         changeEmail(e)
@@ -30,6 +35,7 @@ const but = (e) => {
 // //№2
 
 const butTask2 = (e) => {
+
     const prevFatherEl = e.target.previousElementSibling
     const lastUserChild = prevFatherEl.lastElementChild
     const status = lastUserChild.lastElementChild
@@ -79,3 +85,21 @@ const discount = (e) => {
 // с помощью гугла дошел до обертки на которую навесил обработчик
 // таска 4 все ок
 // таска 5 все ок
+
+// на задачу ушло несколько часов
+
+
+//4) дано розмітка, по натисканню на кнопку має видалитися вся лішка. використовувати делегування,
+// тобто додаєть обробник кліка тільки для ul
+
+const ul = document.querySelector('ul')
+
+ ul.onclick = (e) => {
+    removeItem(e)
+}
+
+const removeItem = (e) => {
+    if (e.target.classList.contains('btn')) {
+        e.target.closest('li').remove()
+    }
+}
