@@ -1,0 +1,85 @@
+body {
+    margin: 0;
+}
+
+#jobs-wrap {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.left-wrap {
+    width: 250px;
+    background: #ffffff;
+    padding: 10px;
+    border-right: 1px solid #e5e7eb;
+}
+
+.job-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.job-element {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #f9fafb;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.job-element:hover {
+    background: #f1f5f9;
+}
+.job-element:hover {
+    background: #f1f5f9;
+}
+
+.job-element h2 {
+    margin: 0 0 6px;
+    font-size: 16px;
+}
+
+.job-element p {
+    margin: 2px 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.right-wrap {
+    flex: 1;
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.job-element.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #2563eb;
+}
+
+.job-element.active p {
+    color: #e0e7ff;
+}
+.right-wrap h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.right-wrap p {
+    margin: 4px 0;
+    color: #374151;
+    font-size: 14px;
+}
+.right-wrap h2, h3 {
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
