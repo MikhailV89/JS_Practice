@@ -147,14 +147,11 @@ listJobs.onclick = (e) => {
     const activeElement = listJobs.querySelector('.active')
     const li = e.target.closest('.job-element');
 
-    if (activeElement) {
-        activeElement.classList.remove('active')
-    }
-
     if (li) {
         li.classList.add('active')
     }
 
+    if (!li) return
     const cardJobId = li.dataset.jobId
     let dataCard
 
@@ -164,7 +161,9 @@ listJobs.onclick = (e) => {
              break
          }
     }
-
+    if (activeElement) {
+        activeElement.classList.remove('active')
+    }
     renderCardDetails (dataCard)
 }
 
