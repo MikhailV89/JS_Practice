@@ -1,0 +1,150 @@
+
+.slider-wrap {
+    position: relative;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider-wrap .photo {
+    width: 600px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 16px;
+    text-align: center;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+
+.slider-wrap .photo img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+
+.slider-wrap button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: none;
+
+    background: #fff;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: 0.3s;
+}
+
+
+.slider-wrap .prev {
+    left: 20px;
+}
+
+.slider-wrap .next {
+    right: 20px;
+}
+
+
+.slider-wrap button:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    background: #e5e7eb;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.buttons button:hover {
+    background: #d1d5db;
+}
+
+
+.buttons button.active {
+    background: #3b82f6;
+    color: white;
+}
+
+#images, #products {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.card p {
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+.btn {
+    padding: 8px 16px;
+    margin: 5px;
+    border: none;
+    background: #eee;
+    cursor: pointer;
+}
+
+.btn.active {
+    background: #333;
+    color: #fff;
+}
+
+.points {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.point {
+    width: 12px;
+    height: 12px;
+    background: #d1d5db;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.point.active {
+    background: #3b82f6;
+}
