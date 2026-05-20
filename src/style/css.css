@@ -114,9 +114,3 @@ body {
 
     border-color: #2563eb;
 }
-
-form {
-    display: flex;
-    flex-direction: column;
-    width: 100px;
-}

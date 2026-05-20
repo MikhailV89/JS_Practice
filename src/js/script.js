@@ -281,24 +281,6 @@ function sliderPrev(currentIndex) {
 }
 
 
-// <div className="form_wrap">
-//     <form>
-//         <label htmlFor="username">User Name</label>
-//         <input type="text" id="username" name="username"/>
-//         <label htmlFor="user-email">Email</label>
-//         <input type="email" id="user-email" name="user-email"/>
-//         <label htmlFor="chooseRole"></label>
-//         <select id="chooseRole" name="chooseRole">
-//             <option>Admin</option>
-//             <option>Manager</option>
-//             <option>User</option>
-//         </select>
-//         <label htmlFor="isActive">Active</label>
-//         <input type="checkbox" id="isActive"/>
-//
-//     </form>
-// </div>
-
 const roles = ['admin', 'manager', 'user']
 const wrap = document.querySelector('.form_wrap')
 
