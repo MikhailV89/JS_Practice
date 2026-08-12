@@ -161,7 +161,6 @@ mainCategoriesRender(categories, filteredArr, products)
 // Событие на appList
 //______________________________
 appList.onclick = (e) => {
-
     if (chooseQuantity(e)) return;
     if (addToCart(e)) return;
 
@@ -181,10 +180,22 @@ appList.onclick = (e) => {
             appList.innerHTML = '';
             mainCategoriesRender(categories, elements, products)
         }
+
+        const names = categories.filter(item => item.id === id)
+        const span = document.createElement('span')
+        span.classList.add('nav_item')
+        span.dataset.id = `${names[0].id}`
+        span.textContent = `${names[0].title} > `
+
+        const elementName = document.createElement('span')
+        elementName.classList.add('nav_item')
+         elementName.dataset.id = categoryItem.dataset.id
+        elementName.textContent = `${categoryItem.textContent} > `
+        navigation.append(span, elementName)
         return;
     }
 
-
+    // по карточке
     const children = categories.filter(
         item => item.parentId === id
     );
@@ -558,9 +569,8 @@ cartWindow.onclick = (e) => {
 
         const index = cartArrData.findIndex(item => item.id === id);
 
-        if (index !== -1) {
             cartArrData.splice(index, 1);
-        }
+
 
         let totalCount = 0;
 
