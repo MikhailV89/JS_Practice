@@ -167,7 +167,7 @@ appList.onclick = (e) => {
     const card = e.target.closest('.item_wrap')
     if (!card) return
     const id = card.dataset.id
-
+    // debugger
     if (e.target.classList.contains('category-item')) {
         const categoryItem = e.target.closest('.category-item')
         if (!categoryItem) return
@@ -176,9 +176,12 @@ appList.onclick = (e) => {
 
         const elements = categories.filter(item => item.parentId === idElement)
 
+            // пофиксить этот кусок
         if (elements.length > 0) {
             appList.innerHTML = '';
             mainCategoriesRender(categories, elements, products)
+        } else {
+            renderProducts(currentProducts);
         }
 
         const names = categories.filter(item => item.id === id)
@@ -192,6 +195,7 @@ appList.onclick = (e) => {
          elementName.dataset.id = categoryItem.dataset.id
         elementName.textContent = `${categoryItem.textContent} > `
         navigation.append(span, elementName)
+
         return;
     }
 
