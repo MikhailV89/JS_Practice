@@ -432,3 +432,213 @@ body {
 .checkout-btn:hover{
     background:#1d4ed8;
 }
+
+/* ----------------  ---------------- */
+/*.user-address {*/
+/*    display: none;*/
+/*}*/
+
+/*.user-address.active {*/
+/*    display: grid;*/
+/*}*/
+/*.checkout-modal {*/
+/*    display: none;*/
+/*}*/
+
+/*.checkout-modal.active {*/
+/*    display: grid;*/
+/*}*/
+
+/* Затемнение всей страницы */
+.checkout-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    place-items: center;
+
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+
+    padding: 20px;
+}
+
+.checkout-modal.active {
+    display: grid;
+}
+
+
+/* Само окно */
+.checkout-form {
+    width: min(100%, 650px);
+    max-height: 90vh;
+    overflow-y: auto;
+
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 28px;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+
+    animation: checkoutOpen 0.25s ease;
+}
+
+
+/* Заголовок */
+.checkout-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 24px;
+}
+
+.checkout-header h2 {
+    margin: 0;
+
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.close-checkout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+
+    border-radius: 50%;
+    cursor: pointer;
+
+    font-size: 18px;
+
+    transition: background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.close-checkout:hover {
+    background: #f1f5f9;
+    transform: rotate(10deg);
+}
+
+
+/* Форма */
+.user-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+
+/* Отдельное поле */
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.form-field label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.form-field input,
+.form-field select {
+    width: 100%;
+    box-sizing: border-box;
+
+    height: 44px;
+    padding: 0 12px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    font-size: 15px;
+    color: #1e293b;
+
+    outline: none;
+
+    transition: border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+    border-color: #3b82f6;
+
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+
+/* Адрес */
+.user-address {
+    display: none;
+
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+
+    grid-column: 1 / -1;
+
+    padding: 18px;
+
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.user-address.active {
+    display: grid;
+}
+
+.btn-wrap {
+    grid-column: 1 / -1;
+
+    display: flex;
+    justify-content: center;
+
+    margin-top: 8px;
+}
+
+.checkout-submit {
+    width: 220px;
+    height: 48px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #2563eb;
+    color: #fff;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+            background 0.2s ease,
+            transform 0.2s ease;
+}
+
+.checkout-submit:hover {
+    background: #1d4ed8;
+}
+
+.checkout-submit:active {
+    transform: scale(0.97);
+}
+
+.input-error {
+    border: 1px solid red;
+    background-color: #fff5f5;
+}
+
+.error-text {
+    color: red;
+    border-bottom: 1px solid red;
+}

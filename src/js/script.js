@@ -1,5 +1,5 @@
-import {categories, products} from "./data.js";
-import {chooseQuantity, renderQuantity} from './fumctions.js';
+import {categories, products, optionData} from "./data.js";
+import {chooseQuantity, renderQuantity, createInput, createOptions, updateCartCount, showError, removeError} from './fumctions.js';
 // є список категорій товарів. в кожній є список підкатегорій, в кожній з яких є свій список підкатегорій. і в
 // кожній категорії на найнижчому рівні є товари.
 //
@@ -19,7 +19,10 @@ import {chooseQuantity, renderQuantity} from './fumctions.js';
 //______________________________
 
 const header = document.querySelector('.header');
-const cartArrData = []
+ const rawData = localStorage.getItem('cart');
+const cartArrData = rawData ? JSON.parse(rawData) : [];
+
+
 const cartWindow = document.querySelector('.modal')
 
 function headerRender() {
@@ -70,12 +73,14 @@ function headerRender() {
 
     const count = document.createElement('span');
     count.classList.add('cart-count');
-    count.textContent = '0';
+    // count.textContent = '0';
+
 
     cart.append(icon, text, count);
     menu.append(searchClearBtn,account, wishList, cart);
 
     header.append(logo, search, menu);
+    updateCartCount(cartArrData)
 }
 
 headerRender()
@@ -181,7 +186,11 @@ appList.onclick = (e) => {
             appList.innerHTML = '';
             mainCategoriesRender(categories, elements, products)
         } else {
-            renderProducts(currentProducts);
+            const currentProducts = products.filter(
+                    item => item.categoryId === idElement
+                );
+
+                renderProducts(currentProducts);
         }
 
         const names = categories.filter(item => item.id === id)
@@ -235,15 +244,24 @@ function addToCart(e) {
     const value = child.querySelector('.value')
 
 
-    const count = Number(value.textContent)
-    const num = Number(cart.textContent)
-    const result = num + count
-    cart.textContent = `${result}`
+ const count = Number(value.textContent)
+    // const num = Number(cart.textContent)
+    // const result = num + count
+    // cart.textContent = `${result}`
 
     const cartProduct = products.find(item => item.id === id)
 
     const existingProduct = cartArrData.find(item => item.id === id);
 
+    // if (existingProduct) {
+    //     existingProduct.quantity += count;
+    // } else {
+    //     cartArrData.push({
+    //         ...cartProduct,
+    //         quantity: count
+    //     });
+    //     localStorage.setItem('cart',JSON.stringify(cartArrData))
+    // }
     if (existingProduct) {
         existingProduct.quantity += count;
     } else {
@@ -252,10 +270,12 @@ function addToCart(e) {
             quantity: count
         });
     }
+
+    localStorage.setItem('cart', JSON.stringify(cartArrData));
+    updateCartCount(cartArrData);
 }
 
 // Рендер содержимого корзины
-//(заняло несколько часов создание) структура/ css/ порядок какой
 //______________________________
 function cartRender(arr) {
     cartWindow.innerHTML = '';
@@ -414,6 +434,76 @@ function navigationRender() {
 
 navigationRender()
 
+// Функция модального окна регистрации
+//-------------------------------------------
+
+const modalForm = document.querySelector('.checkout-modal')
+
+function formWindowRender() {
+    const checkoutWrap = document.createElement('div')
+    checkoutWrap.classList.add('checkout-form')
+
+    const headerWrap = document.createElement('div')
+    headerWrap.classList.add('checkout-header')
+
+    const header = document.createElement('h2')
+    header.textContent = 'Checkout'
+
+    const closeCheckout = document.createElement('span')
+    closeCheckout.textContent = '❌'
+    closeCheckout.classList.add('close-checkout')
+
+    headerWrap.append(header, closeCheckout)
+
+    const form = document.createElement('form')
+    form.classList.add('user-form');
+
+    const firstName = createInput('First Name', 'first-name', 'text')
+    const lastName = createInput('Last Name', 'last-name', 'text')
+    const email = createInput('Email', 'user-email', 'email')
+    const phone = createInput('Phone', 'user-phone', 'tel')
+
+    const selectType = createOptions( 'Delivery method', 'delivery', optionData)
+
+    const userAddress = document.createElement('div')
+    userAddress.classList.add('user-address')
+
+    const city = createInput('City', 'city', 'text')
+    const street = createInput('Street', 'street', 'text')
+    const house = createInput('House', 'house', 'text')
+    const flat = createInput('Flat', 'flat', 'text')
+
+    userAddress.append(city, street, house, flat)
+    const deliverySelect = selectType.querySelector('select')
+
+    if (deliverySelect.value === 'delivery') {
+        userAddress.classList.add('active')
+    }
+
+    deliverySelect.onchange = (e) => {
+        if (e.target.value === 'delivery') {
+            userAddress.classList.add('active')
+        } else {
+            userAddress.classList.remove('active')
+        }
+    }
+
+    const btnWrap = document.createElement('div')
+    btnWrap.classList.add('btn-wrap')
+
+    const btn = document.createElement('button')
+    btn.type = 'submit'
+   btn.classList.add('checkout-submit')
+    btn.textContent = 'Place Order'
+
+    btnWrap.append(btn)
+
+    form.append(firstName, lastName, email, phone, selectType, userAddress, btnWrap)
+    checkoutWrap.append(headerWrap, form)
+    modalForm.append(checkoutWrap)
+
+}
+ formWindowRender()
 
 // Клик по навигации
 //______________________________
@@ -492,47 +582,7 @@ search.oninput = (e) => {
 
 }
 
-// Клик по открытой корзине
-//---------------------------
-// cartWindow.onclick = (e) => {
-//     if (e.target.matches('.btn-plus, .btn-minus')) {
-//
-//         const cartItem = e.target.closest('.cart-item');
-//         const id = cartItem.dataset.id;
-//         const price = document.querySelector('.final-prices')
-//
-//         const product = cartArrData.find(item => item.id === id);
-//
-//         if (e.target.classList.contains('btn-plus')) {
-//             product.quantity++;
-//             price.textContent = `${product.quantity}`
-//         } else if (e.target.classList.contains('btn-minus') && product.quantity > 1) {
-//             product.quantity--;
-//             price.textContent = `${product.quantity}`
-//         }
-//
-//         cartRender(cartArrData);
-//         return;
-//     }
-//
-//     const parent = e.target.parentElement
-//
-//     if (e.target.closest('.close-cart') || e.target.closest('.continue-btn' )||
-//         e.target.closest('.checkout-btn')) {
-//         cartWindow.classList.remove('active');
-//     }
-//     const price = document.querySelector('.final-prices')
-//     const cartItem = e.target.closest('.cart-item');
-//     if (e.target.closest('.cart-remove')) {
-//         if (parent.closest('.cart-modal'))
-//         parent.remove()
-//     }
-//
-//
-//
-// }
 cartWindow.onclick = (e) => {
-
     if (e.target.matches('.btn-plus, .btn-minus')) {
 
         const cartItem = e.target.closest('.cart-item');
@@ -544,27 +594,30 @@ cartWindow.onclick = (e) => {
             product.quantity++;
         }
 
-        if (
-            e.target.classList.contains('btn-minus') &&
-            product.quantity > 1
-        ) {
+        if (e.target.classList.contains('btn-minus') && product.quantity > 1) {
             product.quantity--;
         }
-
+        localStorage.setItem('cart',JSON.stringify(cartArrData))
+        updateCartCount(cartArrData);
         cartRender(cartArrData);
 
         return;
     }
 
-    if (
-        e.target.closest('.close-cart') ||
-        e.target.closest('.continue-btn') ||
-        e.target.closest('.checkout-btn')
-    ) {
+    if (e.target.closest('.close-cart') || e.target.closest('.continue-btn')) {
         cartWindow.classList.remove('active');
-
         return;
     }
+
+    // для открытия окна регистрации
+     if ( e.target.closest('.checkout-btn')) {
+         if (cartArrData.length === 0) {
+             return
+         }
+         modalForm.classList.add('active')
+         cartWindow.classList.remove('active');
+         return;
+     }
 
     if (e.target.closest('.cart-remove')) {
 
@@ -573,20 +626,108 @@ cartWindow.onclick = (e) => {
 
         const index = cartArrData.findIndex(item => item.id === id);
 
-            cartArrData.splice(index, 1);
+        cartArrData.splice(index, 1);
 
+        localStorage.setItem('cart', JSON.stringify(cartArrData));
 
-        let totalCount = 0;
-
-        for (let i = 0; i < cartArrData.length; i++) {
-            totalCount += cartArrData[i].quantity;
-        }
-
-        const cart = document.querySelector('.cart-count');
-        cart.textContent = `${totalCount}`;
-
+        updateCartCount(cartArrData);
         cartRender(cartArrData);
 
         return;
     }
+
 };
+
+// Закрытие окна формы
+modalForm.onclick = (e) => {
+    if (e.target.closest('.close-checkout')) {
+        modalForm.classList.remove('active')
+        return
+    }
+}
+
+
+
+// Ивент на форме
+
+modalForm.onsubmit = (e) => {
+    e.preventDefault()
+
+    if (!validateForm()) {
+        return
+    }
+    const inputs = document.querySelectorAll('input, select')
+    const arr = []
+
+    for (let i = 0; i < inputs.length; i++) {
+        if (inputs[i].value !== '') {
+            arr.push({
+                name: inputs[i].name,
+                value: inputs[i].value
+            })
+        }
+
+    }
+
+    console.log(arr)
+}
+
+
+// Проверка инпутов
+function validateForm()  {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z]+\.[a-zA-Z]+$/;
+    const phoneRegex = /^(?:0\d{9}|\+380\d{9})$/;
+
+    const firstName = document.querySelector('#first-name');
+    const lastName = document.querySelector('#last-name');
+    const email = document.querySelector('#user-email');
+    const phone = document.querySelector('#user-phone');
+    const delivery = document.querySelector('#delivery');
+
+    const firstNameValue = document.querySelector('#first-name').value.trim()
+    const lastNameValue = document.querySelector('#last-name').value.trim()
+    const emailValue = document.querySelector('#user-email').value.trim()
+    const phoneValue = document.querySelector('#user-phone').value.trim()
+
+
+    const deliverySelect = document.querySelector('#delivery')
+
+    removeError(firstName)
+    removeError(lastName)
+    removeError(email)
+    removeError(phone)
+    removeError(delivery)
+
+    if (!firstNameValue) {
+        showError(firstName, 'First name is required')
+        return false
+    }
+
+    if (!lastNameValue) {
+        showError(lastName, 'Last name is required')
+        return false
+    }
+
+    if (!emailRegex.test(emailValue)) {
+        showError(email, 'Invalid email')
+        return false
+    }
+
+    if (!phoneRegex.test(phoneValue)) {
+        showError(phone, 'Invalid phone')
+        return false
+    }
+
+    if (deliverySelect.value === 'delivery')  {
+        const cityValue = document.querySelector('#city').value.trim()
+        const streetValue = document.querySelector('#street').value.trim()
+        const houseValue = document.querySelector('#house').value.trim()
+        const flatValue = document.querySelector('#flat').value.trim()
+
+        if (!cityValue || !streetValue || !houseValue || !flatValue) {
+            console.log('all fields must be filled in')
+            return false
+        }
+    }
+    return true
+}

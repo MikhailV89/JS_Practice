@@ -507,3 +507,14 @@ export const products = [
         categoryId: 'c52'
     }
 ];
+
+export const optionData = [
+    {
+        value: 'delivery',
+        text: 'Delivery'
+    },
+    {
+        value: 'pickup',
+        text: 'Pickup'
+    }
+]

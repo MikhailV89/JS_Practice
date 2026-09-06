@@ -33,3 +33,84 @@ export function renderQuantity (quantityValue) {
     quantity.append(minus, count, plus)
     return quantity
 }
+
+// Создание инпутов
+export function createInput (labelText, inputId, type) {
+    const div = document.createElement('div');
+    div.classList.add('form-field')
+
+    const label = document.createElement('label')
+    label.textContent = labelText
+    label.htmlFor = inputId
+
+    const input = document.createElement('input')
+    input.id = inputId
+    input.name = inputId
+    input.type = type
+
+    div.append(label, input)
+
+    return div
+}
+
+// Создание options
+export function createOptions (labelText, selectId, options) {
+    const div = document.createElement('div');
+    div.classList.add('form-field')
+
+    const label = document.createElement('label')
+    label.textContent = labelText
+    label.htmlFor = selectId
+
+    const select = document.createElement('select');
+    select.id = selectId;
+    select.name = selectId;
+
+    for (let i = 0; i < options.length; i++) {
+        const option = document.createElement('option');
+
+        option.value = options[i].value
+        option.textContent = options[i].text;
+
+        select.append(option)
+    }
+
+    div.append(label, select);
+
+    return div;
+}
+
+// Обновить счетчик корзины
+export function updateCartCount(arr) {
+    const cart = document.querySelector('.cart-count')
+
+    let totalCount = 0
+
+
+    for (let i = 0; i < arr.length; i++) {
+        totalCount += arr[i].quantity
+    }
+
+  cart.textContent = totalCount
+}
+
+export function showError (input, text) {
+    const parent = input.parentElement
+    input.classList.add('input-error')
+
+    const span = document.createElement('span')
+    span.classList.add('error-text')
+    span.textContent = text
+
+    parent.append(span)
+}
+
+export function removeError (input) {
+
+    input.classList.remove('input-error')
+    const text = input.parentElement.querySelector('.error-text')
+
+    if (text) {
+        text.remove()
+    }
+}
