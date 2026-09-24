@@ -1,19 +1,6 @@
 import {categories, products, optionData} from "./data.js";
-import {chooseQuantity, renderQuantity, createInput, createOptions, updateCartCount, showError, removeError} from './fumctions.js';
-// є список категорій товарів. в кожній є список підкатегорій, в кожній з яких є свій список підкатегорій. і в
-// кожній категорії на найнижчому рівні є товари.
-//
-// вивести на сторінку основні категорії у вигляді списку. по натисканню на категорію, виводиться список
-// її підкатегорій. по натисканню на підкатегорію, виводиться список її підкатегорій. по натисканню на підкатегорію,
-// виводиться список її товарів у вигляді карток.
-//
-//зверху показує "адресу", де юзер зараз знаходиться, у вигляді ланцюжка вибраних категорій. по натисканню на
-// категорію з ланцюжка, виводиться список її підкатегорій або товарів. по натисканню на Categories виводить
-// список кореневих категорій
-
-
-
-
+import {chooseQuantity, renderQuantity, createInput, createOptions, updateCartCount, showError, removeError, updateWishCount} from './fumctions.js';
+import {eventsData, renderEvents} from './events.js'
 // Header
 // Рендер Хедера
 //______________________________
@@ -21,6 +8,7 @@ import {chooseQuantity, renderQuantity, createInput, createOptions, updateCartCo
 const header = document.querySelector('.header');
  const rawData = localStorage.getItem('cart');
 const cartArrData = rawData ? JSON.parse(rawData) : [];
+let wishListArrData = JSON.parse(localStorage.getItem('wishlist')) || []
 
 
 const cartWindow = document.querySelector('.modal')
@@ -35,6 +23,7 @@ function headerRender() {
     const input = document.createElement('input');
     input.classList.add('search-value')
     input.placeholder = 'Search products...';
+    input.dataset.event = 'Search products'
 
 
     search.append(input)
@@ -42,28 +31,40 @@ function headerRender() {
     const loop = document.createElement('span');
     loop.classList.add('search-icon');
     loop.textContent = '🔍';
+    loop.dataset.event = 'search-icon'
 
     search.append(loop);
 
     const searchClearBtn = document.createElement('button')
     searchClearBtn.textContent = 'clear field'
     searchClearBtn.classList.add('clear-btn','not-active-btn')
-
+    searchClearBtn.dataset.event = 'clear field'
 
 
     const menu = document.createElement('div');
     menu.classList.add('header-menu');
 
     const account = document.createElement('span');
-    account.classList.add('header-item');
+    account.classList.add('header-item', 'account');
     account.textContent = '👤 Account'
+    account.dataset.event = 'account'
 
     const wishList = document.createElement('span');
     wishList.classList.add('header-item');
+    wishList.id = 'wish-list'
     wishList.textContent = '♡ Wishlist'
+    wishList.dataset.event = 'Wishlist'
+
+    const wishCount = document.createElement('span')
+    wishCount.classList.add('wish-count')
+    debugger
+    // wishCount.textContent = updateWishCount(wishListArrData)
+
+    wishList.append(wishCount)
 
     const cart = document.createElement('div');
     cart.classList.add('cart');
+    cart.dataset.event = 'Cart'
 
     const icon = document.createElement('span');
     icon.textContent = '🛒';
@@ -73,14 +74,13 @@ function headerRender() {
 
     const count = document.createElement('span');
     count.classList.add('cart-count');
-    // count.textContent = '0';
-
 
     cart.append(icon, text, count);
     menu.append(searchClearBtn,account, wishList, cart);
 
     header.append(logo, search, menu);
     updateCartCount(cartArrData)
+    updateWishCount(wishListArrData)
 }
 
 headerRender()
@@ -117,6 +117,7 @@ function mainCategoriesRender(categories, filtered, products) {
         const div = document.createElement('div')
         div.classList.add('item_wrap')
         div.dataset.id = filtered[i].id;
+        div.dataset.event = filtered[i].title
         const header = document.createElement('div');
         header.classList.add('item_header');
 
@@ -141,6 +142,7 @@ function mainCategoriesRender(categories, filtered, products) {
                 li.textContent = categories[j].title
                 li.dataset.id = categories[j].id
                 li.classList.add('category-item');
+                li.dataset.event = categories[j].title
                 ul.append(li)
             }
         }
@@ -168,11 +170,12 @@ mainCategoriesRender(categories, filteredArr, products)
 appList.onclick = (e) => {
     if (chooseQuantity(e)) return;
     if (addToCart(e)) return;
+    if (addToWishList(e)) return;
 
     const card = e.target.closest('.item_wrap')
     if (!card) return
     const id = card.dataset.id
-    // debugger
+
     if (e.target.classList.contains('category-item')) {
         const categoryItem = e.target.closest('.category-item')
         if (!categoryItem) return
@@ -181,7 +184,6 @@ appList.onclick = (e) => {
 
         const elements = categories.filter(item => item.parentId === idElement)
 
-            // пофиксить этот кусок
         if (elements.length > 0) {
             appList.innerHTML = '';
             mainCategoriesRender(categories, elements, products)
@@ -193,11 +195,13 @@ appList.onclick = (e) => {
                 renderProducts(currentProducts);
         }
 
+
         const names = categories.filter(item => item.id === id)
         const span = document.createElement('span')
         span.classList.add('nav_item')
         span.dataset.id = `${names[0].id}`
         span.textContent = `${names[0].title} > `
+
 
         const elementName = document.createElement('span')
         elementName.classList.add('nav_item')
@@ -207,6 +211,7 @@ appList.onclick = (e) => {
 
         return;
     }
+
 
     // по карточке
     const children = categories.filter(
@@ -221,6 +226,7 @@ appList.onclick = (e) => {
             item => item.categoryId === id);
         renderProducts(currentProducts);
     }
+
 
     const name = categories.filter(item => item.id === id)
     const span = document.createElement('span')
@@ -245,23 +251,12 @@ function addToCart(e) {
 
 
  const count = Number(value.textContent)
-    // const num = Number(cart.textContent)
-    // const result = num + count
-    // cart.textContent = `${result}`
+
 
     const cartProduct = products.find(item => item.id === id)
 
     const existingProduct = cartArrData.find(item => item.id === id);
 
-    // if (existingProduct) {
-    //     existingProduct.quantity += count;
-    // } else {
-    //     cartArrData.push({
-    //         ...cartProduct,
-    //         quantity: count
-    //     });
-    //     localStorage.setItem('cart',JSON.stringify(cartArrData))
-    // }
     if (existingProduct) {
         existingProduct.quantity += count;
     } else {
@@ -273,6 +268,35 @@ function addToCart(e) {
 
     localStorage.setItem('cart', JSON.stringify(cartArrData));
     updateCartCount(cartArrData);
+}
+
+//Функция добавления в виш лист
+
+
+function addToWishList (e) {
+    const wish = e.target.closest('.wish')
+
+    if (!wish) return false
+
+    const card = wish.closest('.product_card');
+    const id = card.dataset.id;
+
+    const findProductInArr = wishListArrData.find(item => item.id === id)
+
+    if (findProductInArr) {
+        const index = wishListArrData.findIndex(item => item.id === id)
+        wishListArrData.splice(index, 1);
+        wish.textContent = '🤍';
+    } else {
+        const product = products.find(item => item.id === id);
+        wishListArrData.push( {...product, quantity: 1});
+        wish.textContent = '❤️';
+    }
+    localStorage.setItem('wishlist', JSON.stringify(wishListArrData))
+
+    updateWishCount(wishListArrData);
+
+    return true;
 }
 
 // Рендер содержимого корзины
@@ -295,6 +319,7 @@ function cartRender(arr) {
     const close = document.createElement('span')
     close.textContent = '❌'
     close.classList.add('close-cart')
+    close.dataset.event = 'close-cart'
 
     cartHeader.append(title, close)
     modal.append(cartHeader)
@@ -335,6 +360,7 @@ function cartRender(arr) {
         const removeCart = document.createElement('span')
         removeCart.classList.add('cart-remove')
         removeCart.textContent = '❌'
+        removeCart.dataset.event = 'cart-remove'
 
         info.append(itemTitle, price);
         cartItem.append(img, info, quantity, cartPrice, removeCart);
@@ -359,10 +385,12 @@ function cartRender(arr) {
     const continueBtn = document.createElement('button')
     continueBtn.classList.add('continue-btn')
     continueBtn.textContent = 'Continue Shopping'
+    continueBtn.dataset.event = 'Continue Shopping'
 
     const checkoutBtn = document.createElement('button')
     checkoutBtn.classList.add('checkout-btn')
     checkoutBtn.textContent = 'Checkout'
+    checkoutBtn.dataset.event = 'Checkout'
 
     cartBtn.append(continueBtn, checkoutBtn)
 
@@ -382,6 +410,7 @@ function renderProducts(arr) {
     for (let i = 0; i < arr.length; i++) {
         const div = document.createElement('div')
         div.classList.add('product_card');
+        div.dataset.id = arr[i].id;
 
         const img = document.createElement('img')
         img.src = arr[i].image
@@ -394,6 +423,17 @@ function renderProducts(arr) {
         const title = document.createElement('h2')
         title.textContent = arr[i].title
         title.classList.add('product_title');
+
+        const findElement = wishListArrData.find(item => item.id === arr[i].id)
+         const addToWishList = document.createElement('span')
+
+        if (findElement) {
+            addToWishList.textContent = '❤️'
+        } else {
+            addToWishList.textContent = '🤍'
+        }
+        addToWishList.classList.add('wish')
+        addToWishList.dataset.event = 'Add to wish'
 
 
         const price = document.createElement('p')
@@ -409,10 +449,11 @@ function renderProducts(arr) {
         addBtn.classList.add('add-cart')
         addBtn.textContent = '🛒 Add to Cart';
         addBtn.dataset.id = arr[i].id;
+        addBtn.dataset.event = 'Add to Cart'
 
         btnWrap.append(quantity, addBtn)
 
-        photoInfo.append(title, price, btnWrap)
+        photoInfo.append(title, addToWishList, price, btnWrap)
         div.append(img, photoInfo)
         appList.append(div)
     }
@@ -493,8 +534,9 @@ function formWindowRender() {
 
     const btn = document.createElement('button')
     btn.type = 'submit'
-   btn.classList.add('checkout-submit')
+     btn.classList.add('checkout-submit')
     btn.textContent = 'Place Order'
+    btn.dataset.event = 'Place Order'
 
     btnWrap.append(btn)
 
@@ -504,6 +546,189 @@ function formWindowRender() {
 
 }
  formWindowRender()
+
+//Рендер содержимого вишлиста
+//-------------------------------------------------
+const wishListWindow = document.querySelector('.wishlist-modal')
+
+
+function wishListRender (arr) {
+    wishListWindow.innerHTML = '';
+
+    const modal = document.createElement('div')
+    modal.classList.add('wishlist-window')
+
+    const wishHeader = document.createElement('div')
+    wishHeader.classList.add('wish-header')
+
+    const title = document.createElement('h2')
+    title.textContent = `Wishlist (${arr.length})`;
+
+    const close = document.createElement('span')
+    close.textContent = '❌'
+    close.classList.add('close-wishlist')
+
+    wishHeader.append(title, close)
+    modal.append(wishHeader)
+
+    const wishBody = document.createElement('div')
+    wishBody.classList.add('wishlist-body')
+
+    for (let i = 0; i < arr.length; i++) {
+        const wishItem = document.createElement('div')
+        wishItem.classList.add('wishlist-item');
+        wishItem.dataset.id = arr[i].id;
+
+        const img = document.createElement('img');
+        img.src = arr[i].image;
+        img.classList.add('wishlist-img');
+
+        const info = document.createElement('div');
+            info.classList.add('wish-info');
+
+            const wishTitle = document.createElement('h3');
+            wishTitle.textContent = arr[i].title;
+
+            const wishPrice = document.createElement('p');
+            wishPrice.textContent = `$${arr[i].price}`;
+
+            const quantityWish = renderQuantity(arr[i].quantity)
+
+            const addWishCart = document.createElement('button')
+            addWishCart.classList.add('wish-add-cart')
+            addWishCart.textContent = '🛒 Add to Cart'
+            addWishCart.dataset.id = arr[i].id
+            addWishCart.dataset.event = 'Add to Cart from wish'
+
+            const cartPrice = document.createElement('p')
+            cartPrice.classList.add('cart-price')
+            cartPrice.textContent = `$${arr[i].price * arr[i].quantity}`;
+
+            const removeWish = document.createElement('span')
+            removeWish.classList.add('wish-remove')
+            removeWish.textContent = '❌'
+
+            info.append(wishTitle, wishPrice);
+            wishItem.append(img, info, quantityWish, cartPrice, addWishCart, removeWish);
+
+            wishBody.append(wishItem)
+    }
+    modal.append(wishBody)
+    wishListWindow.append(modal)
+}
+
+// Рендер содержимого Аккаунта
+//__________________________________________
+
+const accountModal = document.querySelector('.account-modal')
+
+function accountRender () {
+    accountModal.innerHTML = ''
+
+    const modal = document.createElement('div')
+    modal.classList.add('account-window')
+
+    const header = document.createElement('div')
+    header.classList.add('account-header')
+
+    const title = document.createElement('h2')
+    title.textContent = 'My Account'
+
+    const close = document.createElement('span')
+    close.classList.add('close-account')
+    close.dataset.event = 'close-account'
+    close.textContent = '❌'
+
+    header.append(title, close)
+
+
+    const statistics = document.createElement('button')
+    statistics.classList.add('statistics-btn')
+    statistics.textContent = 'My statistics >'
+    statistics.dataset.event = 'My statistics'
+
+    modal.append(header, statistics)
+
+    accountModal.append(modal)
+}
+
+function chooseWishQuantity(e) {
+    const card = e.target.closest('.wishlist-item')
+    const id = card.dataset.id
+
+    const product = wishListArrData.find(item => item.id === id)
+
+    if (e.target.classList.contains('btn-plus')) {
+        product.quantity++;
+    }
+
+    if (e.target.classList.contains('btn-minus') && product.quantity > 1) {
+        product.quantity--;
+    }
+
+    wishListRender(wishListArrData)
+
+    return true
+}
+
+wishListWindow.onclick = (e) =>{
+    if (e.target.closest('.close-wishlist')) {
+        wishListWindow.classList.remove('active')
+    }
+
+    if (addFromWishToCart(e)) return;
+
+    if (e.target.closest('.wish-remove')) {
+        debugger
+        const product = document.querySelectorAll('.product_card')
+
+        const wishItem = e.target.closest('.wishlist-item');
+        const id = wishItem.dataset.id;
+
+        const index = wishListArrData.findIndex(item => item.id === id);
+
+        for (let i = 0; i < product.length; i++) {
+            if (id === product[i].dataset.id) {
+                const wish = product[i].querySelector('.wish')
+                wish.textContent = '🤍'
+            }
+        }
+
+        wishListArrData.splice(index, 1);
+
+        localStorage.setItem('wishlist', JSON.stringify(wishListArrData))
+        updateWishCount(wishListArrData)
+        wishListRender(wishListArrData)
+        return;
+    }
+    if (chooseWishQuantity(e)) return
+}
+
+function addFromWishToCart(e) {
+    const btn = e.target.closest('.wish-add-cart')
+
+    if (!btn) return false
+
+    const id = btn.dataset.id;
+
+    const cartProduct = wishListArrData.find(item => item.id === id)
+
+    const existingProduct = cartArrData.find(item => item.id === id);
+
+    if (!existingProduct) {
+        cartArrData.push({...cartProduct})
+    }
+    const index = wishListArrData.findIndex(item => item.id === id);
+    wishListArrData.splice(index, 1);
+
+
+    localStorage.setItem('cart', JSON.stringify(cartArrData));
+    updateWishCount(wishListArrData)
+    wishListRender(wishListArrData)
+    updateCartCount(cartArrData);
+
+    return true
+}
 
 // Клик по навигации
 //______________________________
@@ -546,6 +771,15 @@ header.onclick = (e) => {
         cartWindow.classList.add('active');
         cartRender(cartArrData)
     }
+    if (e.target.closest('#wish-list')) {
+        wishListWindow.classList.add('active');
+        wishListRender(wishListArrData);
+    }
+
+    if (e.target.closest('.account')) {
+        accountModal.classList.add('active')
+        accountRender()
+    }
 
     if (e.target.closest('.clear-btn')) {
         search.value = ''
@@ -553,12 +787,36 @@ header.onclick = (e) => {
         appList.innerHTML = '';
          mainCategoriesRender(categories, filteredArr, products)
         navigationRender()
+    }
+}
 
+// Клики в аккаунте
+//-----------------------------------
+
+accountModal.onclick = (e) => {
+    if (e.target.closest('.close-account')) {
+        accountModal.classList.remove('active')
+        return
+    }
+
+    if (e.target.closest('.statistics-btn')) {
+        const modal = e.target.closest('.account-window')
+        const accountList = document.querySelector('.events-list')
+        const btn = document.querySelector('.statistics-btn')
+
+        if (accountList) {
+            accountList.remove()
+            btn.textContent = 'My statistics >'
+        } else {
+            modal.append(renderEvents(eventsData))
+            btn.textContent = 'My statistics V'
+        }
+        return
     }
 }
 
 // Клик по поиску
-
+//-----------------------------------
 search.oninput = (e) => {
     const value = e.target.value.toLowerCase()
 
@@ -582,6 +840,7 @@ search.oninput = (e) => {
 
 }
 
+// Клик по корзине
 cartWindow.onclick = (e) => {
     if (e.target.matches('.btn-plus, .btn-minus')) {
 
@@ -692,6 +951,8 @@ function validateForm()  {
 
     const deliverySelect = document.querySelector('#delivery')
 
+    let isValidOrNot = true
+
     removeError(firstName)
     removeError(lastName)
     removeError(email)
@@ -700,34 +961,94 @@ function validateForm()  {
 
     if (!firstNameValue) {
         showError(firstName, 'First name is required')
-        return false
+        isValidOrNot = false
     }
 
     if (!lastNameValue) {
         showError(lastName, 'Last name is required')
-        return false
+        isValidOrNot = false
     }
 
     if (!emailRegex.test(emailValue)) {
         showError(email, 'Invalid email')
-        return false
+        isValidOrNot = false
     }
 
     if (!phoneRegex.test(phoneValue)) {
         showError(phone, 'Invalid phone')
-        return false
+        isValidOrNot = false
     }
 
     if (deliverySelect.value === 'delivery')  {
+        const city = document.querySelector('#city')
+        const street = document.querySelector('#street')
+        const house = document.querySelector('#house')
+        const flat = document.querySelector('#flat')
+
         const cityValue = document.querySelector('#city').value.trim()
         const streetValue = document.querySelector('#street').value.trim()
         const houseValue = document.querySelector('#house').value.trim()
         const flatValue = document.querySelector('#flat').value.trim()
 
-        if (!cityValue || !streetValue || !houseValue || !flatValue) {
-            console.log('all fields must be filled in')
-            return false
+        removeError(city)
+        removeError(street)
+        removeError(house)
+        removeError(flat)
+
+       if (!cityValue) {
+           showError(city, 'Invalid City')
+           isValidOrNot = false
+       }
+        if (!streetValue) {
+            showError(street, 'Invalid Street')
+            isValidOrNot = false
+        }
+        if (!houseValue) {
+            showError(house, 'Invalid House')
+            isValidOrNot = false
+        }
+        if (!flatValue) {
+            showError(flat, 'Invalid Flat')
+            isValidOrNot = false
         }
     }
-    return true
+    return isValidOrNot
 }
+
+
+//-------------------
+
+const user1 = {
+    name: 'Oleg',
+    surname: 'Petrovich',
+    getFullName
+}
+
+const user2 = {
+    name: 'John',
+    surname: 'Snow',
+    getFullName
+}
+
+function getFullName () {
+   return `Full name: ${this.name} ${this.surname}`
+
+}
+
+// const fullName1 = `${user1.name} ${user1.surname}`
+// const fullName2 = `${user2.name} ${user2.surname}`
+
+console.log(user1.getFullName())
+console.log(user2.getFullName())
+
+
+function createUser (name, surname) {
+    return {
+        name: name,
+        surname: surname,
+        getFullName
+    }
+}
+
+const user3 = createUser('Lena', 'Userovna')
+console.log(user3.getFullName())

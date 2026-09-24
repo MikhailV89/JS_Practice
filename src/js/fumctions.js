@@ -47,6 +47,7 @@ export function createInput (labelText, inputId, type) {
     input.id = inputId
     input.name = inputId
     input.type = type
+    input.dataset.event = inputId
 
     div.append(label, input)
 
@@ -71,6 +72,7 @@ export function createOptions (labelText, selectId, options) {
 
         option.value = options[i].value
         option.textContent = options[i].text;
+        option.dataset.event = options[i].text;
 
         select.append(option)
     }
@@ -85,13 +87,24 @@ export function updateCartCount(arr) {
     const cart = document.querySelector('.cart-count')
 
     let totalCount = 0
-
-
     for (let i = 0; i < arr.length; i++) {
         totalCount += arr[i].quantity
     }
 
   cart.textContent = totalCount
+}
+
+// Обновить счетчик вишлиста
+
+export function updateWishCount(arr) {
+    const wish = document.querySelector('.wish-count')
+    let totalCount = 0
+
+    for (let i = 0; i < arr.length; i++) {
+        totalCount ++
+    }
+    wish.textContent = totalCount
+    return wish
 }
 
 export function showError (input, text) {
@@ -114,3 +127,4 @@ export function removeError (input) {
         text.remove()
     }
 }
+

@@ -642,3 +642,221 @@ body {
     color: red;
     border-bottom: 1px solid red;
 }
+
+.wish {
+    cursor: pointer;
+}
+
+.wish-count {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    min-width: 21px;
+    height: 21px;
+    padding: 0 4px;
+
+    margin-left: 5px;
+
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+
+    font-size: 11px;
+    line-height: 1;
+
+    position: relative;
+    top: -9px;
+}
+
+.wishlist-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    display: none;
+}
+
+.wishlist-modal.active {
+    display: flex;
+}
+.wishlist-window {
+    width: 700px;
+    max-height: 80vh;
+    background: #fff;
+    border-radius: 18px;
+    padding: 34px;
+    box-sizing: border-box;
+}
+
+.wish-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.wish-header h2 {
+    margin: 0;
+}
+
+.close-wishlist {
+    cursor: pointer;
+}
+.wishlist-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    display: none;
+}
+
+.wishlist-modal.active {
+    display: flex;
+}
+
+.wishlist-window {
+    width: 700px;
+    max-height: 80vh;
+    background: #fff;
+    border-radius: 18px;
+    padding: 34px;
+    box-sizing: border-box;
+}
+
+.wish-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.wish-header h2 {
+    margin: 0;
+}
+
+.close-wishlist {
+    cursor: pointer;
+}
+
+.wishlist-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 55vh;
+    overflow-y: auto;
+}
+
+.wishlist-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.wishlist-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.wish-info {
+    flex: 1;
+}
+
+.wish-info h3 {
+    margin: 0 0 8px;
+}
+
+.wish-info p {
+    margin: 0;
+}
+
+.wish-remove {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.wish-add-cart {
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.wish-add-cart:hover {
+    background: #444;
+}
+
+.wish-add-cart:active {
+    transform: scale(.97);
+}
+.account {
+    cursor: pointer;
+}
+.account-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.account-modal.active {
+    display: flex;
+}
+
+.account-window {
+    width: 500px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 30px;
+}
+
+.account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.account-header h2 {
+    margin: 0;
+}
+
+.close-account {
+    cursor: pointer;
+}
+
+.statistics-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.events-list {
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+}
+
+.events-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
