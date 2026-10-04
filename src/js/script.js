@@ -385,3 +385,5 @@ cart.remove(myProduct2.id);
 console.log(cart.getTotal());//2400
 cart.clear();
 console.log(cart.getTotal());//0
+
+
